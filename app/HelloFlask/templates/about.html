@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<p>{{ message }}</p>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var rows = {{rows|tojson}} ;
+    var data = [];
+    for (var i = 0; i < rows.length; i++) {
+       data.push(rows[i]);
+    }
+    console.log(data);
+</script>
+{% endblock %}

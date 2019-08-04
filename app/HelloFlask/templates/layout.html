@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8" />
+
+    <!-- Define a viewport for Bootstrap's responsive rendering -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - My Flask Application</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+    <style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
+</head>
+
+<body n>
+    <!-- Navbar omitted -->
+
+    <div class="container body-content">
+        <!-- "content" block that pages are expected to override -->
+        {% block content %}{% endblock %}
+        <hr />
+        <footer>
+            <p>&copy; {{ year }} - My Flask Application</p>
+        </footer>
+    </div>
+
+    <!-- Additional scripts; use the "scripts" block to add page-specific scripts.  -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/moment.js"></script>
+    <script src="/static/js/Chart.min.js"></script>
+    <script src="/static/js/utils.js"></script>
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>
