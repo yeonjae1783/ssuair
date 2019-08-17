@@ -8,13 +8,15 @@ from keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import keras.backend as K
 from keras.layers import LSTM 
+from statsmodels.tsa.arima_model import ARIMA
+import statsmodels.api as sm
 
 #파일 불러와서 전처리하는 함수.
 #여기서는 csv파일로 읽어옴.
 def read_file(filename):
   #파일 불러오기
     df = pd.read_csv(filename, encoding='cp949')
-  
+
   #전처리과정
     df = df.rename(columns={'field1':'temperature'})
     df = df.rename(columns={'field2':'humidity'})
@@ -67,3 +69,15 @@ def lstm_predict(X_test):
     y_pred = model.predict(X_test)
   
     return y_pred
+
+
+def sarima_predict(test):
+  #test값은 49개 이상이어야 함.
+  test = pd.DataFrame(test)
+  model = sm.tsa.SARIMAX(test, order=(1,0,1), seasonal_order=(1,1, 0, 24))
+  model_fit = model.fit()
+  fore = model_fit.forecast(steps=1)
+
+  return fore
+
+  

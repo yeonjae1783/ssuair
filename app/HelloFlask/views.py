@@ -40,27 +40,31 @@ def about():
         message='Your application description page.')
 
 @app.route('/predict')
-def prediction_lstm():
+def prediction_both():
         #thingspeak 데이터 가져옴   
-        print("========================", os.getcwd())
         df = prediction.read_file('HelloFlask/model/301.csv')
-        #그 중 에서 지난 하루 값 넣어줌. (thingspeak에서 지난 25개만 가져오면 됨)
+
+        #LSTM
+        #그 중 에서 지난 -하루 값 넣어줌.(24개만!!)
         df2 = df.loc['2019-07-26 13' : '2019-07-27 12']
-        test = df2.iloc[:,5] #pm10만 사용
-        X_test_t, sc = prediction.data_transfer(test)
-
+        test2 = df2.iloc[:,5] #pm10만 사용
+        X_test_t, sc = prediction.data_transfer(test2)
         #모델 에측값 y_pred
-        y_pred = prediction.lstm_predict(X_test_t)
-
+        y_pred_lstm = prediction.lstm_predict(X_test_t)
         #0~1사이인 y_pred를 실제 값으로 변환
-        y_pred_real = sc.inverse_transform(y_pred)
-        print("real value", y_pred_real)
+        y_pred_real = sc.inverse_transform(y_pred_lstm)
+
+        #SARIMA
+        #그 중 에서 지난 이틀 + 한시간 값 넣어줌.(49개 필요)
+        df3 = df.loc['2019-07-24 08' : '2019-07-26 12']
+        test3 = df3.iloc[:,5] #pm10만 사용
+        #모델 에측값 y_pred
+        y_pred_sarima = prediction.sarima_predict(test3)
+
         return render_template(
                 'predict.html',
-                predict_result = y_pred_real
+                predict_lstm = y_pred_real,
+                predict_sarima = y_pred_sarima
         )
-
-#def prediction_sarima():
-
 
 
