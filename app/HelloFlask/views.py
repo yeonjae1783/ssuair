@@ -1,7 +1,9 @@
-from flask import render_template
+from flask import render_template, request
 from datetime import datetime
 import requests
 from HelloFlask import app
+from . import prediction
+import os
 
 @app.route('/')
 @app.route('/home')
@@ -14,7 +16,7 @@ def home():
         year=now.year,
         message=formatted_now)
 
-
+"""
 @app.route('/api/data')
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 30일치 조회
@@ -26,7 +28,7 @@ def get_data():
         year=datetime.now().year,
         message=rows,
         rows=rows['feeds'])
-
+"""
 
 @app.route('/about')
 def about():
@@ -36,3 +38,29 @@ def about():
         title='About',
         year=datetime.now().year,
         message='Your application description page.')
+
+@app.route('/predict')
+def prediction_lstm():
+        #thingspeak 데이터 가져옴   
+        print("========================", os.getcwd())
+        df = prediction.read_file('HelloFlask/model/301.csv')
+        #그 중 에서 지난 하루 값 넣어줌. (thingspeak에서 지난 25개만 가져오면 됨)
+        df2 = df.loc['2019-07-26 13' : '2019-07-27 12']
+        test = df2.iloc[:,5] #pm10만 사용
+        X_test_t, sc = prediction.data_transfer(test)
+
+        #모델 에측값 y_pred
+        y_pred = prediction.lstm_predict(X_test_t)
+
+        #0~1사이인 y_pred를 실제 값으로 변환
+        y_pred_real = sc.inverse_transform(y_pred)
+        print("real value", y_pred_real)
+        return render_template(
+                'predict.html',
+                predict_result = y_pred_real
+        )
+
+#def prediction_sarima():
+
+
+
