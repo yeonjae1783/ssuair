@@ -2,18 +2,39 @@
 
 {% block content %}
 
-<h2>{{ title }}.</h2>
-<p>{{ message }}</p>
+    <h2>{{ title }}.</h2>
+
+    {% for item in message['feeds'] %}
+        <p>{{item['created_at']}}온도{{item['field1']}} 습도 {{item['field2']}} 미세먼지 {{item['field6']}}</p>
+    {% endfor %}
 
 {% endblock %}
 
 {% block scripts %}
 <script>
+
     var rows = {{rows|tojson}} ;
     var data = [];
+    var pm10=[];
+    var temperature=[];
+    var humidity=[];
+    var discomfortIndex=[];
+    var time=[];
+
     for (var i = 0; i < rows.length; i++) {
+
        data.push(rows[i]);
+       temperature.push(rows[i]['field1']);
+       humidity.push(rows[i]['field2']);
+       discomfortIndex.push(1.8*temperature[i]-0.55*(1-humidity[i]/100)*(1.8*temperature[i]-26)+32);
+       pm10.push(rows[i]['field6']);
+       time.push(rows[i]['created_at']);
     }
+
     console.log(data);
+    console.log(discomfortIndex);
+    console.log(pm10);
+    console.log(time);
+
 </script>
 {% endblock %}
