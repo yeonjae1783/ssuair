@@ -89,3 +89,22 @@ def prediction_refresh():
         """
 
 
+
+@app.route('/api/outdoor')
+def get_outdoordata():
+
+    url = 'https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&average=60&days=30'
+
+
+
+    response = requests.get('http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName=동작구&dataTerm=month&pageNo=1&numOfRows=1&ServiceKey=06YrQ2lf4444lv2VTKkrSXMQ%2BQqcxe1lwovKMj5rneOSAP8XH6ddTWVVvDk4XgH%2B1AnMRO5V7oMgk4UF0ZMNcg%3D%3D&_returnType=json&ver=1.3')
+    rows = response.json()
+    print(rows['list'][0]['pm10Value']);
+    # print(rows[0])
+    #print(rows['pm10Value'])
+    return render_template(
+        'outdoor.html',
+        title='data@!!!',
+        message=rows,
+        rows = rows['list']
+    )
