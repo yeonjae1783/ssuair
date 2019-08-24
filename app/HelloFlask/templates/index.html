@@ -2,14 +2,14 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
-    <title>{{ title }} {{message}}</title>
+    <title> SSUAIR </title>
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Bootstrap 4 Mobile App Template">
-    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
-    <link rel="shortcut icon" href="favicon.ico">
+    <!--<meta name="description" content="Bootstrap 4 Mobile App Template">-->
+    <!--<meta name="author" content="Xiaoying Riley at 3rd Wave Media">-->
+    <!--<link rel="shortcut icon" href="favicon.ico">-->
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Maven+Pro:400,500,700|Nunito:400,600,700" rel="stylesheet">
     <!-- FontAwesome JS-->
@@ -19,6 +19,7 @@
 </head>
 
 <body>
+
 <header class="header">
     <div class="branding">
         <div class="container position-relative">
@@ -28,8 +29,11 @@
             </nav>
             <!-- // Free Version ONLY -->
             <ul class="social-list list-inline mb-0 position-absolute">
-                <li class="list-inline-item"><a class="text-dark" href="https://github.com/yeonjae1783/ssuair.git"><i
-                        class="fab fa-github fa-fw"></i></a></li>
+                <!--<li class="list-inline-item"><a class="text-dark" href="https://github.com/yeonjae1783/ssuair.git">-->
+                    <!--<i class="fab fa-github fa-fw"></i></a></li>-->
+
+                <li class="list-inline-item">
+                    <span>  {{ formatted_now }}  <a href="/"><i class="fa fa-refresh"></i></a></span></li>
             </ul>
             <!--//social-list-->
         </div>
@@ -38,16 +42,15 @@
     <!--//branding-->
 </header>
 <!--//header-->
+
 <section class="hero-section">
-    <div class="container">
-        <div class="row figure-holder">
-            <div class="col-12 col-md-6 pt-3 pt-md-4">
-                <h2 class="site-headline font-weight-bold mt-lg-5 pt-lg-5">The best way to promote your app and convert
-                    users.</h2>
-                <div class="site-tagline mb-3">현재는 실시간 관측된 자료이며 측정소 현지 사정이나 한국환경공단 에어코리아 공공 데이터의 수신상태에 따라 데이터가 기록되지 않을 수
-                    있습니다. 오늘 오전과 오후, 내일과 모레, 주간 예보는 케이웨더가 대기환경 예보모델(CMAQ)을 적용해 해당 시간대의 평균적인 상황을 예측한 예보치 므로 실제 측정치와 차이가
-                    발생할 수 있습니다. ‘한때나쁨’은 나쁨(81-150㎍/m)상태가 6시간 미만인 상태를 의미합니다. 모레 데이터는 오전 5시 이후 업데이트 됩니다.
-                    최종업데이트 현재 2019.08.17. 19:00, 예보 2019.08.17. 17:00
+    <div class="container py-lg-5">
+        <div class="row">
+            <div class="col-12 col-md-10 pt-md-4">
+                <h2 class="site-headline font-weight-bold pt-lg-5">약 한 시간 정도 <span style="color:#47b0df;">창문을 열면</span> 건강한 숨을 쉴 수 있습니다.</h2>
+                <div class="site-tagline mb-3">
+                    실내공기와 불쾌지수가 나쁜 반면 실외공기가 좋습니다. <br>
+                    창문을 열지 않았을 때 한 시간 후 실내공기질이 나빠질 예정이니 창문을 여세요. <br>
                 </div>
             </div>
         </div>
@@ -55,16 +58,39 @@
     </div>
 </section>
 <!--//hero-section-->
+
+<script>
+    var rows = {{rows|tojson}};
+    var data=[];
+    var pm10=[];
+    var temperature=[];
+    var humidity=[];
+    var discomfortIndex=[];
+    var time=[];
+
+    for (var i = 0; i < rows.length; i++) {
+
+       data.push(rows[i]);
+       temperature.push(rows[i]['field1']);
+       humidity.push(rows[i]['field2']);
+       discomfortIndex.push(1.8*temperature[i]-0.55*(1-humidity[i]/100)*(1.8*temperature[i]-26)+32);
+       pm10.push(rows[i]['field6']);
+       time.push(rows[i]['created_at']);
+    }
+
+    console.log(pm10);
+    console.log(time);
+</script>
+
 <section class="features-section py-5">
     <div class="container py-lg-5">
-        <h3 class="mb-3 text-center font-weight-bold section-heading">Monitor</h3>
+        <h3 class="mb-3 text-center font-weight-bold section-heading"></h3>
         <div class="row pt-5 mb-5">
             <div class="col-12 col-lg-4">
                 <div class="card rounded border-0 shadow-lg mb-5">
                     <div class="card-body p-4">
                         <h5 class="card-title mb-5"><i
-                                class="far fa-chart-bar mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>Feature
-                            Lorem Ipsum</h5>
+                                class="far fa-chart-bar mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>불쾌지수</h5>
                         <!-- Progress bar 1 -->
                         <div class="progress mx-auto" data-value='80'>
                                 <span class="progress-left">
@@ -74,23 +100,23 @@
                                     <span class="progress-bar border-primary"></span>
                                 </span>
                             <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
-                                <h2 class="font-weight-bold">80<sup class="small">%</sup></h2>
+                                <h2 class="font-weight-bold">55<sup class="small">DI</sup></h2>
                             </div>
                         </div>
                         <!-- END -->
                         <!-- Demo info -->
-                        <div class="row text-center mt-4 mb-3">
-                            <div class="col-6 border-right">
-                                <h5 class="mb-0">28%</h5>
-                                <span class="small text-gray">Last week</span>
-                            </div>
-                            <div class="col-6">
-                                <h5 class="mb-0">60%</h5>
-                                <span class="small text-gray">Last month</span>
-                            </div>
-                        </div>
+                        <!--<div class="row text-center mt-4 mb-3">-->
+                            <!--<div class="col-6 border-right">-->
+                                <!--<h5 class="mb-0">28%</h5>-->
+                                <!--<span class="small text-gray">Last week</span>-->
+                            <!--</div>-->
+                            <!--<div class="col-6">-->
+                                <!--<h5 class="mb-0">60%</h5>-->
+                                <!--<span class="small text-gray">Last month</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <!-- END -->
-                        <a href="#">Learn more <span class="more-arrow">&rarr;</span></a>
+                        <a href="https://thingspeak.com/channels/768165">Learn more <span class="more-arrow">&rarr;</span></a>
                     </div>
                 </div>
                 <!--//card-->
@@ -99,8 +125,7 @@
                 <div class="card rounded border-0 shadow-lg mb-5">
                     <div class="card-body p-4">
                         <h5 class="card-title mb-5"><i
-                                class="fas fa-laptop-code mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>Feature
-                            Consectetuer</h5>
+                                class="fas fa-laptop-code mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>실내 미세먼지</h5>
                         <!-- Progress bar 2 -->
                         <div class="progress mx-auto" data-value='25'>
                                 <span class="progress-left">
@@ -110,23 +135,23 @@
                                     <span class="progress-bar border-danger"></span>
                                 </span>
                             <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
-                                <h2 class="font-weight-bold">25<sup class="small">%</sup></h2>
+                                <h2 class="font-weight-bold">{{ last_indoor }}<sup class="small">PM</sup></h2>
                             </div>
                         </div>
                         <!-- END -->
                         <!-- Demo info-->
-                        <div class="row text-center mt-4 mb-3">
-                            <div class="col-6 border-right">
-                                <h5 class="mb-0">28%</h5>
-                                <span class="small text-gray">Last week</span>
-                            </div>
-                            <div class="col-6">
-                                <h5 class="mb-0">60%</h5>
-                                <span class="small text-gray">Last month</span>
-                            </div>
-                        </div>
+                        <!--<div class="row text-center mt-4 mb-3">-->
+                            <!--<div class="col-6 border-right">-->
+                                <!--<h5 class="mb-0">28%</h5>-->
+                                <!--<span class="small text-gray">Last week</span>-->
+                            <!--</div>-->
+                            <!--<div class="col-6">-->
+                                <!--<h5 class="mb-0">60%</h5>-->
+                                <!--<span class="small text-gray">Last month</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <!-- END -->
-                        <a href="#">Learn more <span class="more-arrow">&rarr;</span></a>
+                        <a href="https://thingspeak.com/channels/768165">Learn more <span class="more-arrow">&rarr;</span></a>
                     </div>
                 </div>
                 <!--//card-->
@@ -135,8 +160,7 @@
                 <div class="card rounded-lg border-0 shadow-lg">
                     <div class="card-body p-4">
                         <h5 class="card-title mb-5"><i
-                                class="far fa-calendar-alt mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>Feature
-                            Lorem Ipsum</h5>
+                                class="far fa-calendar-alt mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>실외 미세먼지</h5>
                         <!-- Progress bar 3 -->
                         <div class="progress mx-auto" data-value='76'>
                                 <span class="progress-left">
@@ -146,23 +170,23 @@
                                     <span class="progress-bar border-success"></span>
                                 </span>
                             <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
-                                <h2 class="font-weight-bold">76<sup class="small">%</sup></h2>
+                                <h2 class="font-weight-bold">20<sup class="small">PM</sup></h2>
                             </div>
                         </div>
                         <!-- END -->
                         <!-- Demo info -->
-                        <div class="row text-center mt-4 mb-3">
-                            <div class="col-6 border-right">
-                                <h5 class="mb-0">28%</h5>
-                                <span class="small text-gray">Last week</span>
-                            </div>
-                            <div class="col-6">
-                                <h5 class="mb-0">60%</h5>
-                                <span class="small text-gray">Last month</span>
-                            </div>
-                        </div>
+                        <!--<div class="row text-center mt-4 mb-3">-->
+                            <!--<div class="col-6 border-right">-->
+                                <!--<h5 class="mb-0">28%</h5>-->
+                                <!--<span class="small text-gray">Last week</span>-->
+                            <!--</div>-->
+                            <!--<div class="col-6">-->
+                                <!--<h5 class="mb-0">60%</h5>-->
+                                <!--<span class="small text-gray">Last month</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <!-- END -->
-                        <a href="#">Learn more <span class="more-arrow">&rarr;</span></a>
+                        <a href="https://thingspeak.com/channels/768165">Learn more <span class="more-arrow">&rarr;</span></a>
                     </div>
                 </div>
                 <!--//card-->
@@ -172,50 +196,54 @@
     <!--//container-->
 </section>
 <!--//features-section-->
-<section class="cta-section py-5 theme-bg-secondary text-center">
+
+<section class="cta-section py-5 text-center">
     <div class="container">
-        <h3 class="text-white font-weight-bold mb-3">Ready to turn your visitors to app users?</h3>
-        <div class="text-white mx-auto single-col-max-width section-intro">
+        <h3 class="font-weight-bold mb-3">미세먼지 예측 그래프</h3>
+        <div class="mx-auto single-col-max-width section-intro">
             <canvas id="myChart"></canvas>
-            Try Nova Free Today. Lorem ipsum dolor sit
-            amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-            penatibus et magnis dis.
+            <!--Try Nova Free Today. Lorem ipsum dolor sit-->
+            <!--amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
+            <!--penatibus et magnis dis.-->
         </div>
     </div>
 </section>
 <!--//cta-section-->
-<footer class="footer theme-bg-primary">
-    <div class="container py-5 mb-3">
-        <div class="row">
-            <div class="footer-col col-6 col-lg-3">
-                <h4 class="col-heading">About Nova</h4>
-                <ul class="list-unstyled">
-                    <li><a href="#">Our Story</a></li>
-                    <li><a href="#">Pricing</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Jobs</a></li>
-                </ul>
-            </div>
-            <!--//footer-col-->
-        </div>
-        <!--//row-->
-    </div>
-    <!--//container-->
-    <div class="container">
-        <hr>
-    </div>
-    <div class="download-area py-4">
-        <div class="container text-center">
-            <h3 class="mb-3">Get the app</h3>
-            <div class="section-intro mb-4 single-col-max-width mx-auto">Download our apps now. lorem ipsum dolor sit
-                amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-                penatibus et magnis dis.
-            </div>
-        </div>
-        <!--//container-->
-    </div>
-    <!--//download-area-->
-</footer>
+
+<!--<footer class="footer theme-bg-primary">-->
+    <!--<div class="container py-5 mb-3">-->
+        <!--<div class="row">-->
+            <!--<div class="footer-col col-6 col-lg-3">-->
+                <!--<h4 class="col-heading">About Nova</h4>-->
+                <!--<ul class="list-unstyled">-->
+                    <!--<li><a href="#">Our Story</a></li>-->
+                    <!--<li><a href="#">Pricing</a></li>-->
+                    <!--<li><a href="#">Contact</a></li>-->
+                    <!--<li><a href="#">Jobs</a></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+            <!--&lt;!&ndash;//footer-col&ndash;&gt;-->
+        <!--</div>-->
+        <!--&lt;!&ndash;//row&ndash;&gt;-->
+    <!--</div>-->
+    <!--&lt;!&ndash;//container&ndash;&gt;-->
+    <!--<div class="container">-->
+        <!--<hr>-->
+    <!--</div>-->
+    <!--<div class="download-area py-4">-->
+        <!--<div class="container text-center">-->
+            <!--<h3 class="mb-3">Get the app</h3>-->
+            <!--<div class="section-intro mb-4 single-col-max-width mx-auto">Download our apps now. lorem ipsum dolor sit-->
+                <!--amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
+                <!--penatibus et magnis dis.-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;//container&ndash;&gt;-->
+    <!--</div>-->
+    <!--&lt;!&ndash;//download-area&ndash;&gt;-->
+<!--</footer>-->
+<!--//footer-->
+
 <!-- Javascript -->
 <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/static/js/popper.min.js"></script>
@@ -234,21 +262,21 @@ function newDate() {
 var config = {
   type: 'line',
   data: {
-    labels: ['00:00','01:15', '02:00', '03:20', '04:00', '05:00', '06:00','07:00','08:00','09:00','10:00','11:00',
-    '12:00','13:00','14:00','15:00','16:00','17:00','18:00','23:59'],
+    labels: ['00:00','01:00', '02:00', '03:00', '04:00', '05:00', '06:00','07:00','08:00','09:00','10:00','11:00',
+    '12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','23:59'],
     datasets: [{
-      label: "My First dataset",
-      data: [1, 3, 4, 2, 1, 4, 2,3],
+      label: "미세먼지",
+      data: pm10,
       borderColor: 'rgba(237, 110, 113, 1)',
       backgroundColor: 'rgba(237, 110, 113, 0.2)',
     },{
-      label: "My second dataset",
-      data: [10, 13, 34, 42, 11, 14, 42,33],
+      label: "LSTM",
+      data: [20,24,25,32,33,30,28,25,24,31,31,31,35,30,28,26,30,30,33,38,40],
        borderColor: 'rgba(85, 161, 219, 1)',
        backgroundColor: 'rgba(85, 161, 219, 0.2)',
     },{
-      label: "My Third dataset",
-      data: [1, 33, 44, 2, 11, 44, 2,35],
+      label: "ARIMA",
+      data: [30,28,24,25,25,26,28,28,27,28,29,31,32,33,30,28,33,33,33,35,35],
        borderColor: 'rgba(108, 190, 191, 1)',
        backgroundColor: 'rgba(108, 190, 191, 0.2)',
     }]

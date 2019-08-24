@@ -1,6 +1,6 @@
 from flask import render_template, request
-from datetime import datetime
-import requests
+from datetime import datetime, date
+import requests, math
 from HelloFlask import app
 from . import prediction
 import os
@@ -8,19 +8,23 @@ import os
 @app.route('/')
 @app.route('/home')
 def home():
-    now = datetime.now()
-    formatted_now = now.strftime("%A, %d %B, %Y at %X")
+    formatted_now = datetime.now().strftime("%A, %d %B, %Y at %X")
+    formatted_start = date.today().strftime('%Y-%m-%d%%20%H:%M:%S')
+    formatted_end = datetime.now().strftime('%Y-%m-%d%%20%H:%M:%S')
+    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&average=60&timezone=Asia%2FSeoul&start='+formatted_start+'&end='+formatted_end)
+    rows = response.json()
+    rows = rows['feeds']
+    last_indoor = int(float(rows[-1]['field6'])) # 마지막으로 측정된 실내미세먼지 데이터
     return render_template(
         "index.html",
-        title="Hello, Flask!",
-        year=now.year,
-        message=formatted_now)
+        formatted_now=formatted_now,
+        rows=rows,
+        last_indoor=last_indoor)
 
-"""
 @app.route('/api/data')
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 30일치 조회
-    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key='''&result=8000&average=60&days=30')
+    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&average=60&days=30')
     rows = response.json()
     return render_template(
         'about.html',
@@ -28,7 +32,6 @@ def get_data():
         year=datetime.now().year,
         message=rows,
         rows=rows['feeds'])
-"""
 
 @app.route('/about')
 def about():
