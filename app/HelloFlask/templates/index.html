@@ -233,6 +233,7 @@ function newDate() {
 
 var arima_array = {{ predict_sarima }};
 var lstm_array = {{ predict_lstm }};
+var dust_array = {{ dust_array }}
 console.log(lstm_array);
 var config = {
   type: 'line',
@@ -250,8 +251,8 @@ var config = {
        borderColor: 'rgba(85, 161, 219, 1)',
        backgroundColor: 'rgba(85, 161, 219, 0.2)',
     },{
-      label: "My Third dataset",
-      data: [1, 33, 44, 2, 11, 44, 2,35],
+      label: "Last 24 hours pm10",
+      data: dust_array,
        borderColor: 'rgba(108, 190, 191, 1)',
        backgroundColor: 'rgba(108, 190, 191, 0.2)',
     }]

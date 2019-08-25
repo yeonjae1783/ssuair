@@ -12,11 +12,9 @@ from statsmodels.tsa.arima_model import ARIMA
 import statsmodels.api as sm
 
 #파일 불러와서 전처리하는 함수.
-#여기서는 csv파일로 읽어옴.
-def read_file(filename):
+def read_file(df):
   #파일 불러오기
-    df = pd.read_csv(filename, encoding='cp949')
-
+    df = pd.DataFrame(df)
   #전처리과정
     df = df.rename(columns={'field1':'temperature'})
     df = df.rename(columns={'field2':'humidity'})
@@ -26,20 +24,21 @@ def read_file(filename):
     df = df.rename(columns={'field6':'pm10'})
     df = df.drop('entry_id', axis=1)
     df = df.iloc[:, :7]
-  
+
     df = df.replace("-", np.nan)
     df = df.dropna(axis=0)
     df.iloc[:,1:] = df.iloc[:,1:].astype(str).astype(float)
     for i in range(1, len(df)):
-        if (df.iloc[i,4]>df.iloc[i-1,4]+20) or (df.iloc[i, 4] > 200):
-            df.iloc[i, 4]=df.iloc[i-1, 4]
-        if (df.iloc[i,5]>df.iloc[i-1,5]+20) or (df.iloc[i, 5] > 200):
-            df.iloc[i, 5]=df.iloc[i-1, 5]
         if (df.iloc[i,6]>df.iloc[i-1,6]+20) or (df.iloc[i, 6] > 200):
             df.iloc[i, 6]=df.iloc[i-1, 6]
         df.iloc[i-1,0] = df.iloc[i-1,0][:13]
     df['created_at'] = pd.to_datetime(df['created_at'])
+
     df = df.set_index('created_at', inplace=False)
+    df = df[:-1]
+    df['pm10'] = df['pm10'].astype(int)
+    #pm10만 사용
+    df = df.iloc[:,5]
     df = df.groupby("created_at").mean()
     return df
 
