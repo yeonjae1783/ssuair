@@ -34,7 +34,7 @@ def home():
 #@app.route('/api/data')
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 3일치 조회
-    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&days=3')
+    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=##&result=8000&days=3')
     rows = response.json()
     return datetime.now().year, rows, rows['feeds']
     """
