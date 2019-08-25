@@ -17,7 +17,7 @@ def home():
     #갱신버튼 누르는 함수 누르면 밑에 호출
     #맨 앞 원소 삭제 후 맨 뒤에 원소 추가
 
-    pred_lstm ,pred_sarima, dust_array = prediction_refresh()
+    pred_lstm ,pred_sarima, dust_array, time = prediction_refresh()
     del(sarima_array[0]) 
     del(lstm_array[0])
     lstm_array.append(pred_lstm) 
@@ -29,12 +29,13 @@ def home():
         message=formatted_now,
         predict_sarima = sarima_array,
         predict_lstm = lstm_array,
-        dust_array = dust_array)
+        dust_array = dust_array,
+        time_array = time)
 
 #@app.route('/api/data')
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 3일치 조회
-    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=##&result=8000&days=3')
+    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&days=3')
     rows = response.json()
     return datetime.now().year, rows, rows['feeds']
     """
@@ -66,6 +67,11 @@ def prediction_refresh():
         #최근 24시간 미세먼지 정보
         df2 = df[-24:]
         df2 = df2.tolist()
+        
+        #시간 정보
+        time = df[-25:].index.tolist()
+        time = [str(i) for i in time]
+        time = [i[11:16] for i in time]
 
         #LSTM
         #그 중 에서 지난 -하루 값 넣어줌.(24개만!!)
@@ -81,7 +87,8 @@ def prediction_refresh():
         test3 = df[-49:]
         #모델 에측값 y_pred
         y_pred_sarima = prediction.sarima_predict(test3)
-        return int(y_pred_real[0][0]), int(y_pred_sarima[0]), df2
+        
+        return int(y_pred_real[0][0]), int(y_pred_sarima[0]), df2, time
         """
         return render_template(
                 'index.html',
