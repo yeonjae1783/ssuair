@@ -42,9 +42,9 @@
     <div class="container">
         <div class="row figure-holder">
             <div class="col-12 col-md-6 pt-3 pt-md-4">
-                <h2 class="site-headline font-weight-bold mt-lg-5 pt-lg-5">The best way to promote your app and convert
-                    users.</h2>
-                <div class="site-tagline mb-3">현재는 실시간 관측된 자료이며 측정소 현지 사정이나 한국환경공단 에어코리아 공공 데이터의 수신상태에 따라 데이터가 기록되지 않을 수
+                <h1 id="resultSum" style="color:#47b0df;"></h1>
+                <h2  id="result" class="site-headline font-weight-bold mt-lg-5 pt-lg-5"></h2>
+                <div id="resultSub" class="site-tagline mb-3">현재는 실시간 관측된 자료이며 측정소 현지 사정이나 한국환경공단 에어코리아 공공 데이터의 수신상태에 따라 데이터가 기록되지 않을 수
                     있습니다. 오늘 오전과 오후, 내일과 모레, 주간 예보는 케이웨더가 대기환경 예보모델(CMAQ)을 적용해 해당 시간대의 평균적인 상황을 예측한 예보치 므로 실제 측정치와 차이가
                     발생할 수 있습니다. ‘한때나쁨’은 나쁨(81-150㎍/m)상태가 6시간 미만인 상태를 의미합니다. 모레 데이터는 오전 5시 이후 업데이트 됩니다.
                     최종업데이트 현재 2019.08.17. 19:00, 예보 2019.08.17. 17:00
@@ -146,7 +146,7 @@
                                     <span class="progress-bar border-success"></span>
                                 </span>
                             <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
-                                <h2 class="font-weight-bold">76<sup class="small">%</sup></h2>
+                                <h2 class="font-weight-bold">{{ outdoorAir }}<sup class="small">%</sup></h2>
                             </div>
                         </div>
                         <!-- END -->
@@ -265,6 +265,80 @@ var config = {
 
 var ctx = document.getElementById("myChart").getContext("2d");
 new Chart(ctx, config);
+var inAir=10;
+var outAir={{ outdoorAir }};
+var predict = lstm_array[lstm_array.length-1];
+var discomfortIndex=10;
+var result="gggggggggg";
+
+if (inAir <= 75) { //실내 미세먼지 좋음
+        if (outAir <= 80) { //실외 미세먼지 좋음
+            if (predict <= 75) { //실내 미세먼지 예측값 좋음
+                if (discomfortIndex <= 75) { //불쾌지수 좋음
+                    result = "약 한 시간 정도 창문을 열면 건강한 숨을 쉴 수 있습니다."; //창문열어라
+                    resultSub="실내공기와 실외공기가 좋습니다. 환기로 공기를 순환시키세요.";
+                    resultSum="창문을 여세요";
+                } else {
+                    result = "에어컨을 키면 쾌적한 숨을 쉴 수 있습니다. ";
+                    resultSub="실내공기와 실외공기가 좋지만 불쾌지수가 나쁩니다. 에어컨을 통해 불쾌지수를 개선하세요.";
+                    resultSum="에어컨을 키세요.";
+
+                    //에어컨 켜라
+                }
+            } else { //예측값 나쁨
+                result = "약 한 시간 정도 창문을 열면 건강한 숨을 쉴 수 있습니다."; //창문 열어라
+                resultSub="실내공기와 실외공기가 좋습니다. 창문을 열지 않았을 때 한 시간 후 실내공기질이 나빠질 예정이니 창문을 여세요.";
+                resultSum="창문을 여세요";
+
+            }
+        } else { //실외 미세먼지 나쁨
+            if (discomfortIndex <= 75) { //불쾌지수 좋음
+                result = "쾌적한 실내공기입니다. 실내공기와 불쾌지수가 좋습니다. "; //쾌적합니다!
+                resultSub="실외 미세먼지가 좋지 않으니 창문을 열지 마시고 현재 공기질을 유지하세요.";
+                resultSum="현재 쾌적한 공기질입니다.";
+
+            } else {
+                result = "에어컨을 키면 쾌적한 숨을 쉴 수 있습니다. ";
+                resultSub="실내공기는 좋지만 불쾌지수와 실외공기가 나쁩니다.";
+                resultSum="에어컨을 키세요.";
+
+                //에어컨 켜라 여기 다시 보기~~~~
+            }
+        }
+    } else { //실내 미세먼지 나쁨
+        if (outAir <= 80) { //실외 미세먼지 좋음
+
+            if (discomfortIndex <= 75) { //불쾌지수 좋음
+                result = "약 한 시간 정도 창문을 열면 건강한 숨을 쉴 수 있습니다."; //창문열어라
+
+                resultSub="실내공기가 나쁜 반면 실외공기가 좋습니다.";
+                resultSum="창문을 여세요";
+
+            } else {
+                result = "에어컨을 키면 쾌적한 숨을 쉴 수 있습니다. ";
+                resultSub="에어컨을 통해 불쾌지수를 개선하세요.";
+                resultSum="에어컨을 키세요.";
+
+                //에어컨 켜라
+            }
+
+        } else { //실외 미세먼지 나쁨
+            result = "공기청정기를 통해 실내공기를 개선하세요. "; //공기청정기
+            resultSub="실내공기와 실외공기 모두 좋지 않습니다.";
+            resultSum="공기청정기를 키세요.";
+
+        }
+    }
+
+var resultText = document.getElementById("result");
+resultText.innerHTML=result;
+
+var resultSubText = document.getElementById("resultSub");
+resultSubText.innerHTML=resultSub;
+
+var resultSumText = document.getElementById("resultSum");
+resultSumText.innerHTML="<br><br>"+resultSum;
+
 </script>
 
 
