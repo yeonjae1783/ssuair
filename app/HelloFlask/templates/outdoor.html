@@ -3,17 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>안녕</title>
+
 </head>
 <body>
+<<<<<<< HEAD
     <p>들어왔나 확인</p>
+    <h3>{{ test }}</h3>
 <!--    <p>{{rows[0]}}</p>-->
     <p>{{rows[0]['pm10Value']}}</p>
+    <p>ㅎ2ㅎ2ㅎ2ㅎ2</p>
+=======
+<p>들어왔나 확인</p>
+<!--    <p>{{rows[0]}}</p>-->
+<p>{{rows[0]['pm10Value']}}</p>
+>>>>>>> c5b86b9b5403c53f78deab40ba00abe4ce94beeb
 </body>
 <script>
     var rows = {{rows|tojson}} ;
     console.log(rows)
     console.log(rows[0]['pm10Value'])
     var pm=rows[0]['pm10Value'];
+<<<<<<< HEAD
+    test=1111;
+=======
 
+
+>>>>>>> c5b86b9b5403c53f78deab40ba00abe4ce94beeb
 </script>
 </html>

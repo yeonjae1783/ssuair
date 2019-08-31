@@ -15,6 +15,7 @@ import statsmodels.api as sm
 def read_file(df):
   #파일 불러오기
     df = pd.DataFrame(df)
+    print(df)
   #전처리과정
     df = df.rename(columns={'field1':'temperature'})
     df = df.rename(columns={'field2':'humidity'})
@@ -28,16 +29,19 @@ def read_file(df):
     df = df.dropna(axis=0)
     df.iloc[:,1:] = df.iloc[:,1:].astype(str).astype(float)
     for i in range(1, len(df)):
-        if (df.iloc[i,6]>df.iloc[i-1,6]+20) or (df.iloc[i, 6] > 200):
+        if (df.iloc[i, 6] > df.iloc[i - 1, 6] + 20) or (df.iloc[i, 6] > 200):
             df.iloc[i, 6]=df.iloc[i-1, 6]
         df.iloc[i-1,0] = df.iloc[i-1,0][:13]
+
     df['created_at'] = pd.to_datetime(df['created_at'])
     df = df.set_index('created_at', inplace=False)
     df = df[:-1]
     df['pm10'] = df['pm10'].astype(int)
-    #pm10만 사용
-    df = df.iloc[:,5]
+    # pm10만 사용
+    df = df.iloc[:, 5]
+
     df = df.groupby("created_at").mean()
+
     return df
 
 #input : test용 데이터, 최소 하루 치의 데이터는 들어와야 함.
@@ -76,5 +80,3 @@ def sarima_predict(test):
   fore = model_fit.forecast(steps=1)
 
   return fore
-
-  
