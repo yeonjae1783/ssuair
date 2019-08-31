@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
-    <title> SSUAIR </title>
+    <title>{{ title }} {{message}}</title>
     <!-- Meta -->
     <meta charset="utf-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
@@ -173,7 +173,6 @@
     <!--//container-->
 </section>
 <!--//features-section-->
-
 <section class="cta-section py-5 theme-bg-secondary text-center">
     <div class="container">
         <h3 class="text-white font-weight-bold mb-3">미세먼지 예측</h3>
@@ -236,74 +235,53 @@ function newDate() {
   return moment().add(days, 'd');
 }
 
-    var rows = {{rows|tojson}};
-    var data=[];
-    var pm10=[];
-    var temperature=[];
-    var humidity=[];
-    var discomfortIndex=[];
-    var time=[];
-
-    for (var i = 0; i < rows.length; i++) {
-       data.push(rows[i]);
-       temperature.push(rows[i]['field1']);
-       humidity.push(rows[i]['field2']);
-       discomfortIndex.push(1.8*temperature[i]-0.55*(1-humidity[i]/100)*(1.8*temperature[i]-26)+32);
-       pm10.push(rows[i]['field6']);
-       time.push(rows[i]['created_at']);
-    }
-
-    console.log(pm10);
-    console.log(time);
-
-<!--var arima_array = {{ predict_sarima }};-->
-<!--var lstm_array = {{ predict_lstm }};-->
-<!--console.log(lstm_array);-->
+var arima_array = {{ predict_sarima }};
+var lstm_array = {{ predict_lstm }};
+var dust_array = {{ dust_array }};
+var time_array = {{ time_array | safe }};
 
 var config = {
   type: 'line',
   data: {
-    labels: ['00:00','01:00', '02:00', '03:00', '04:00', '05:00', '06:00','07:00','08:00','09:00','10:00','11:00',
-    '12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','23:59'],
+    labels : time_array,
     datasets: [{
-      label: "미세먼지",
-      data: pm10,
+      label: "sarima predict dataset",
+      data: arima_array,
       borderColor: 'rgba(237, 110, 113, 1)',
       backgroundColor: 'rgba(237, 110, 113, 0.2)',
     },{
-      label: "LSTM",
-      data: [20,24,25,32,33,30,28,25,24,31,31,31,35,30,28,26,30,30,33,38,40],
+      label: "lstm predict dataset",
+      data: lstm_array,
        borderColor: 'rgba(85, 161, 219, 1)',
        backgroundColor: 'rgba(85, 161, 219, 0.2)',
     },{
-      label: "ARIMA",
-      data: [30,28,24,25,25,26,28,28,27,28,29,31,32,33,30,28,33,33,33,35,35],
+      label: "Last 24 hours pm10",
+      data: dust_array,
        borderColor: 'rgba(108, 190, 191, 1)',
        backgroundColor: 'rgba(108, 190, 191, 0.2)',
     }]
   },
   options: {
     scales: {
-      xAxes:[{
-  type: 'time',
-  time: {
-    format: "HH:mm",
-    unit: 'hour',
-    unitStepSize: 1,
-    displayFormats: {
-      'minute': 'HH:mm',
-      'hour': 'HH:mm',
-      min: '00:00',
-      max: '23:59'
-    },
-}}],
+      <!--xAxes:[{-->
+  <!--type: 'time',-->
+  <!--time: {-->
+    <!--format: "HH:mm",-->
+    <!--unit: 'hour',-->
+    <!--unitStepSize: 1,-->
+    <!--displayFormats: {-->
+      <!--'minute': 'HH:mm',-->
+      <!--'hour': 'HH:mm',-->
+      <!--min: '00:00',-->
+      <!--max: '23:59'-->
+    <!--},-->
+<!--}}],-->
     },
   }
 };
 
 var ctx = document.getElementById("myChart").getContext("2d");
 new Chart(ctx, config);
-
 </script>
 
 
@@ -336,7 +314,6 @@ new Chart(ctx, config);
         }
 
     });
-
 
 </script>
 </body>
