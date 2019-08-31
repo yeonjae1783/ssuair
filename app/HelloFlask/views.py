@@ -1,5 +1,5 @@
 from flask import render_template, request
-from datetime import datetime
+from datetime import datetime, date
 import requests
 from HelloFlask import app
 from . import prediction
@@ -35,7 +35,7 @@ def home():
 #@app.route('/api/data')
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 3일치 조회
-    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&days=3')
+    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&timezone=Asia%2FSeoul&days=3')
     rows = response.json()
     return datetime.now().year, rows, rows['feeds']
     """
@@ -63,15 +63,17 @@ def prediction_refresh():
         #thingspeak 데이터 가져옴   
         time, _rows, data = get_data()
         df = prediction.read_file(data)
-        
+
         #최근 24시간 미세먼지 정보
         df2 = df[-24:]
         df2 = df2.tolist()
         
         #시간 정보
-        time = df[-25:].index.tolist()
+        time = df[-24:].index.tolist()
         time = [str(i) for i in time]
         time = [i[11:16] for i in time]
+        time.append(time[0])
+       
 
         #LSTM
         #그 중 에서 지난 -하루 값 넣어줌.(24개만!!)

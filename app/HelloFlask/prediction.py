@@ -24,7 +24,6 @@ def read_file(df):
     df = df.rename(columns={'field6':'pm10'})
     df = df.drop('entry_id', axis=1)
     df = df.iloc[:, :7]
-
     df = df.replace("-", np.nan)
     df = df.dropna(axis=0)
     df.iloc[:,1:] = df.iloc[:,1:].astype(str).astype(float)
@@ -33,7 +32,6 @@ def read_file(df):
             df.iloc[i, 6]=df.iloc[i-1, 6]
         df.iloc[i-1,0] = df.iloc[i-1,0][:13]
     df['created_at'] = pd.to_datetime(df['created_at'])
-
     df = df.set_index('created_at', inplace=False)
     df = df[:-1]
     df['pm10'] = df['pm10'].astype(int)
