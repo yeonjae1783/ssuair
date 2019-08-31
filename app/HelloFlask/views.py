@@ -1,4 +1,5 @@
-from flask import render_template
+
+from flask import render_template, request
 from datetime import datetime, date
 import requests
 from HelloFlask import app
@@ -59,12 +60,7 @@ def home():
 # @app.route('/api/data')
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 3일치 조회
-
-    # formatted_start = date.today().strftime('%Y-%m-%d%%20%H:%M:%S')
-    formatted_end = datetime.now().strftime('%Y-%m-%d%%20%H:%M:%S')
-    response = requests.get(
-        'https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&days=3&timezone=Asia%2FSeoul&end=' + formatted_end)
-
+    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&timezone=Asia%2FSeoul&days=3')
     rows = response.json()
 
     return datetime.now().year, rows, rows['feeds']
@@ -89,41 +85,40 @@ def about():
 
 
 # 갱신 버튼을 누를 때 호출
-# thingspeak데이터 가져오는거 만들어서 ㅁㅐ개변수로
-# @app.route('/predict')
-def prediction_refresh():
-    # thingspeak 데이터 가져옴
-    time, _rows, data = get_data()
-    df = prediction.read_file(data)
+#thingspeak데이터 가져오는거 만들어서 ㅁㅐ개변수로
+#@app.route('/predict')
+def prediction_refresh():    
+        #thingspeak 데이터 가져옴   
+        time, _rows, data = get_data()
+        df = prediction.read_file(data)
 
-    # 최근 24시간 미세먼지 정보
-    df2 = df[-24:]
-    df2 = df2.tolist()
+        #최근 24시간 미세먼지 정보
+        df2 = df[-24:]
+        df2 = df2.tolist()
+        
+        #시간 정보
+        time = df[-24:].index.tolist()
+        time = [str(i) for i in time]
+        time = [i[11:16] for i in time]
+        time.append(time[0])
+       
 
-    # 시간 정보
+        #LSTM
+        #그 중 에서 지난 -하루 값 넣어줌.(24개만!!)
+        test2 = df[-24:]
+        X_test_t, sc = prediction.data_transfer(test2)
+        #모델 에측값 y_pred
+        y_pred_lstm = prediction.lstm_predict(X_test_t)
+        #0~1사이인 y_pred를 실제 값으로 변환
+        y_pred_real = sc.inverse_transform(y_pred_lstm)
 
-    time = df[-24:].index.tolist()
-    time = [str(i) for i in time]
-    time = [i[11:16] for i in time]
-    time.append(time[0])
-
-    # LSTM
-    # 그 중 에서 지난 -하루 값 넣어줌.(24개만!!)
-    test2 = df[-45:]
-
-    X_test_t, sc = prediction.data_transfer(test2)
-    # 모델 에측값 y_pred
-    y_pred_lstm = prediction.lstm_predict(X_test_t)
-    # 0~1사이인 y_pred를 실제 값으로 변환
-    y_pred_real = sc.inverse_transform(y_pred_lstm)
-
-    # SARIMA
-    # 그 중 에서 지난 이틀 + 한시간 값 넣어줌.(49개 필요)
-    test3 = df[-49:]
-    # 모델 에측값 y_pred
-    y_pred_sarima = prediction.sarima_predict(test3)
-
-    return int(y_pred_real[0][0]), int(y_pred_sarima[0]), df2, time
+        #SARIMA
+        #그 중 에서 지난 이틀 + 한시간 값 넣어줌.(49개 필요)
+        test3 = df[-49:]
+        #모델 에측값 y_pred
+        y_pred_sarima = prediction.sarima_predict(test3)
+        
+        return int(y_pred_real[0][0]), int(y_pred_sarima[0]), df2, time
 
 
 
