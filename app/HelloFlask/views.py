@@ -29,6 +29,16 @@ def home():
     lstm_array.append(pred_lstm)
     sarima_array.append(pred_sarima)
     last_indoor = int(float(dust_array[-1]))  # 마지막으로 측정된 실내미세먼지 데이터
+    formatted_end = datetime.now().strftime('%Y-%m-%d%%20%H:%M:%S')
+    response = requests.get(
+        'https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&days=3&timezone=Asia%2FSeoul&end=' + formatted_end)
+
+    rows = response.json()
+    rows = rows['feeds'][-1]
+    temp=rows['field1']
+    hum = rows['field2']
+
+    discomfortIndex = int(temp) * 9 / 5 - 0.55 * (1 - int(hum) / 100) * (9 / 5 * int(temp) - 26) + 32;
 
     return render_template(
         "index.html",
@@ -40,7 +50,10 @@ def home():
         dust_array=dust_array,
         time_array=time,
         outdoorAir=outAir,
-        last_indoor=last_indoor)
+        last_indoor=last_indoor,
+        temperature=temp,
+        humidity=hum,
+        discomfort=int(discomfortIndex))
 
 
 # @app.route('/api/data')
@@ -127,8 +140,8 @@ def get_outdoordata():
     # print(rows[0])
     # print(rows['pm10Value'])
 
-    outAir=rows['list'][0]['pm10Value'];
-    return outAir;
+    outAir=rows['list'][0]['pm10Value']
+    return outAir
     # return render_template(
     #     'outdoor.html',
     #     title='data@!!!',

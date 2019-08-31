@@ -76,7 +76,7 @@
                                     <span class="progress-bar border-primary"></span>
                                 </span>
                             <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
-                                <h2 class="font-weight-bold">55<sup class="small">DI</sup></h2>
+                                <h2 class="font-weight-bold">{{ discomfort }}<sup class="small">DI</sup></h2>
                             </div>
                         </div>
                         <!-- END -->
@@ -286,11 +286,15 @@ var config = {
 
 var ctx = document.getElementById("myChart").getContext("2d");
 new Chart(ctx, config);
-var inAir=10;
+var inAir={{ last_indoor }};
 var outAir={{ outdoorAir }};
 var predict = lstm_array[lstm_array.length-1];
-var discomfortIndex=10;
-var result="gggggggggg";
+var temp={{ temperature }};
+var humidity={{ humidity }};
+
+var discomfortIndex=temp*9/5-0.55*(1-humidity/100)*(9/5*temp-26)+32;
+
+var result="";
 
 if (inAir <= 75) { //실내 미세먼지 좋음
         if (outAir <= 80) { //실외 미세먼지 좋음
@@ -301,7 +305,7 @@ if (inAir <= 75) { //실내 미세먼지 좋음
                     resultSum="창문을 여세요";
                 } else {
                     result = "에어컨을 키면 쾌적한 숨을 쉴 수 있습니다. ";
-                    resultSub="실내공기와 실외공기가 좋지만 불쾌지수가 나쁩니다. 에어컨을 통해 불쾌지수를 개선하세요.";
+                    resultSub="실내공기와 실외공기가 좋지만 불쾌지수가f 나쁩니다. 에어컨을 통해 불쾌지수를 개선하세요.";
                     resultSum="에어컨을 키세요.";
 
                     //에어컨 켜라
@@ -359,6 +363,7 @@ resultSubText.innerHTML=resultSub;
 
 var resultSumText = document.getElementById("resultSum");
 resultSumText.innerHTML="<br><br>"+resultSum;
+
 
 </script>
 
