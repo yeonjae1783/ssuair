@@ -122,8 +122,8 @@ def get_outdoordata():
     # print(rows[0])
     # print(rows['pm10Value'])
 
-    outAir=rows['list'][0]['pm10Value'];
-    return outAir;
+    outAir=rows['list'][0]['pm10Value']
+    return outAir
     # return render_template(
     #     'outdoor.html',
     #     title='data@!!!',

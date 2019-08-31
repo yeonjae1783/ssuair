@@ -15,7 +15,6 @@ import statsmodels.api as sm
 def read_file(df):
   #파일 불러오기
     df = pd.DataFrame(df)
-    print(df)
   #전처리과정
     df = df.rename(columns={'field1':'temperature'})
     df = df.rename(columns={'field2':'humidity'})
