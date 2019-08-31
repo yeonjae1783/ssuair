@@ -1,6 +1,6 @@
-from flask import render_template, request
+from flask import render_template
 from datetime import datetime, date
-import requests, math
+import requests
 from HelloFlask import app
 from . import prediction
 import os
@@ -15,16 +15,32 @@ def home():
     rows = response.json()
     rows = rows['feeds']
     last_indoor = int(float(rows[-1]['field6'])) # 마지막으로 측정된 실내미세먼지 데이터
+
+    # sarima, lstm 예측 결과 초기값
+    # sarima_array = [10, 20, 30, 40, 40, 40, 40, 10, 20, 30,    40, 40, 40, 40, 30, 30, 30, 30, 30, 30,   40, 30, 20, 10, 30] #25개 (24 + 이후 한시간)
+    # lstm_array = [30, 30, 30, 40, 40, 40, 40, 30, 30, 30,     30, 10, 10, 10, 10, 10, 10, 10, 10,20,     50, 50, 50, 50, 60] #25개
+    # 갱신버튼 누르는 함수 누르면 밑에 호출
+    # 맨 앞 원소 삭제 후 맨 뒤에 원소 추가
+    # del(sarima_array[0])
+    # del(lstm_array[0])
+    # pred_lstm ,pred_sarima = prediction_refresh()
+    # lstm_array.append(pred_lstm)
+    # sarima_array.append(pred_sarima)
+
     return render_template(
         "index.html",
+        # predict_sarima=sarima_array,
+        # predict_lstm=lstm_array
         formatted_now=formatted_now,
         rows=rows,
         last_indoor=last_indoor)
 
+
+"""
 @app.route('/api/data')
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 30일치 조회
-    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&average=60&days=30')
+    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key='''&result=8000&average=60&days=30')
     rows = response.json()
     return render_template(
         'about.html',
@@ -32,6 +48,8 @@ def get_data():
         year=datetime.now().year,
         message=rows,
         rows=rows['feeds'])
+"""
+
 
 @app.route('/about')
 def about():
@@ -42,32 +60,52 @@ def about():
         year=datetime.now().year,
         message='Your application description page.')
 
-@app.route('/predict')
-def prediction_both():
-        #thingspeak 데이터 가져옴   
-        df = prediction.read_file('HelloFlask/model/301.csv')
 
-        #LSTM
-        #그 중 에서 지난 -하루 값 넣어줌.(24개만!!)
-        df2 = df.loc['2019-07-26 13' : '2019-07-27 12']
-        test2 = df2.iloc[:,5] #pm10만 사용
-        X_test_t, sc = prediction.data_transfer(test2)
-        #모델 에측값 y_pred
-        y_pred_lstm = prediction.lstm_predict(X_test_t)
-        #0~1사이인 y_pred를 실제 값으로 변환
-        y_pred_real = sc.inverse_transform(y_pred_lstm)
+# 갱신 버튼을 누를 때 호출
+# thingspeak데이터 가져오는거 만들어서 ㅁㅐ개변수로
+# @app.route('/predict')
+# def prediction_refresh():
+#         #thingspeak 데이터 가져옴
+#         df = prediction.read_file('HelloFlask/model/301.csv')
+#
+#         #LSTM
+#         #그 중 에서 지난 -하루 값 넣어줌.(24개만!!)
+#         df2 = df.loc['2019-07-26 13' : '2019-07-27 12']
+#         test2 = df2.iloc[:,5] #pm10만 사용
+#         X_test_t, sc = prediction.data_transfer(test2)
+#         #모델 에측값 y_pred
+#         y_pred_lstm = prediction.lstm_predict(X_test_t)
+#         #0~1사이인 y_pred를 실제 값으로 변환
+#         y_pred_real = sc.inverse_transform(y_pred_lstm)
+#
+#         #SARIMA
+#         #그 중 에서 지난 이틀 + 한시간 값 넣어줌.(49개 필요)
+#         df3 = df.loc['2019-07-24 08' : '2019-07-26 12']
+#         test3 = df3.iloc[:,5] #pm10만 사용
+#         #모델 에측값 y_pred
+#         y_pred_sarima = prediction.sarima_predict(test3)
+#
+#         y_pred_real = 100
+#         y_pred_sarima = 100
+#         return y_pred_real, y_pred_sarima
+#
+#         return render_template(
+#                 'index.html',
+#      #           predict_lstm = lstm_list,
+#                 predict_sarima = y_pred_sarima
+#         )
 
-        #SARIMA
-        #그 중 에서 지난 이틀 + 한시간 값 넣어줌.(49개 필요)
-        df3 = df.loc['2019-07-24 08' : '2019-07-26 12']
-        test3 = df3.iloc[:,5] #pm10만 사용
-        #모델 에측값 y_pred
-        y_pred_sarima = prediction.sarima_predict(test3)
 
-        return render_template(
-                'predict.html',
-                predict_lstm = y_pred_real,
-                predict_sarima = y_pred_sarima
-        )
-
-
+@app.route('/api/outdoor')
+def get_outdoordata():
+    response = requests.get(
+        'http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName=동작구&dataTerm=month&pageNo=1&numOfRows=1&ServiceKey=06YrQ2lf4444lv2VTKkrSXMQ%2BQqcxe1lwovKMj5rneOSAP8XH6ddTWVVvDk4XgH%2B1AnMRO5V7oMgk4UF0ZMNcg%3D%3D&_returnType=json&ver=1.3')
+    rows = response.json()
+    print(rows['list'][0]['pm10Value'])
+    # print(rows[0])
+    # print(rows['pm10Value'])
+    return render_template(
+        'outdoor.html',
+        title='data@!!!',
+        message=rows,
+        rows=rows['list'])

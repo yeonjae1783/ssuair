@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>안녕</title>
+</head>
+<body>
+<p>들어왔나 확인</p>
+<!--    <p>{{rows[0]}}</p>-->
+<p>{{rows[0]['pm10Value']}}</p>
+</body>
+<script>
+    var rows = {{rows|tojson}} ;
+    console.log(rows)
+    console.log(rows[0]['pm10Value'])
+    var pm=rows[0]['pm10Value'];
+
+
+</script>
+</html>
