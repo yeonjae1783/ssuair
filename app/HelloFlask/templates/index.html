@@ -63,6 +63,8 @@
         <h3 class="mb-3 text-center font-weight-bold section-heading"></h3>
         <div class="row pt-5 mb-5">
             <div class="col-12 col-lg-4">
+
+                <div class="slide">
                 <div class="card rounded border-0 shadow-lg mb-5">
                     <div class="card-body p-4">
                         <h5 class="card-title mb-5"><i
@@ -79,26 +81,31 @@
                                 <h2 class="font-weight-bold">{{ discomfort }}<sup class="small">DI</sup></h2>
                             </div>
                         </div>
-                        <!-- END -->
-                        <!-- Demo info -->
-                        <!--<div class="row text-center mt-4 mb-3">-->
-                        <!--<div class="col-6 border-right">-->
-                        <!--<h5 class="mb-0">28%</h5>-->
-                        <!--<span class="small text-gray">Last week</span>-->
-                        <!--</div>-->
-                        <!--<div class="col-6">-->
-                        <!--<h5 class="mb-0">60%</h5>-->
-                        <!--<span class="small text-gray">Last month</span>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!-- END -->
                         <a href="https://thingspeak.com/channels/768165">Learn more <span
                                 class="more-arrow">&rarr;</span></a>
                     </div>
                 </div>
+                </div>
+                <div class="slide">
+                    <div class="card rounded border-0 shadow-lg mb-5">
+                            <div class="card-body p-4">
+                                    <h5 class="card-title mb-5"><i
+                                            class="far fa-chart-bar mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>불쾌지수</h5>
+                                    <!-- chart 1 -->
+                                    <div class="chart1">
+                                        <p> 이부분을 차트로 수정</p>
+                                    </div>
+                                    <a href="https://thingspeak.com/channels/768165">Learn more <span
+                                            class="more-arrow">&rarr;</span></a>
+                            </div>
+                    </div>
+                </div>
                 <!--//card-->
             </div>
+
+
             <div class="col-12 col-lg-4">
+                <div class="slide2">
                 <div class="card rounded border-0 shadow-lg mb-5">
                     <div class="card-body p-4">
                         <h5 class="card-title mb-5"><i
@@ -115,26 +122,29 @@
                                 <h2 class="font-weight-bold">{{ last_indoor }}<sup class="small">PM</sup></h2>
                             </div>
                         </div>
-                        <!-- END -->
-                        <!-- Demo info-->
-                        <!--<div class="row text-center mt-4 mb-3">-->
-                        <!--<div class="col-6 border-right">-->
-                        <!--<h5 class="mb-0">28%</h5>-->
-                        <!--<span class="small text-gray">Last week</span>-->
-                        <!--</div>-->
-                        <!--<div class="col-6">-->
-                        <!--<h5 class="mb-0">60%</h5>-->
-                        <!--<span class="small text-gray">Last month</span>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!-- END -->
                         <a href="https://thingspeak.com/channels/768165">Learn more <span
                                 class="more-arrow">&rarr;</span></a>
                     </div>
+                    </div>
+                </div>
+                <div class="slide2">
+                        <div class="card rounded border-0 shadow-lg mb-5">
+                                <div class="card-body p-4">
+                                        <h5 class="card-title mb-5"><i
+                                                class="fas fa-laptop-code mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>실내 미세먼지</h5>
+                                        <!-- chart2 -->
+                                        <div class="chart2">
+                                            <canvas id="SlideChart2"></canvas>
+                                        </div>
+                                        <a href="https://thingspeak.com/channels/768165">Learn more <span
+                                                class="more-arrow">&rarr;</span></a>
+                                </div>
+                        </div>
                 </div>
                 <!--//card-->
             </div>
             <div class="col-12 col-lg-4">
+                <div class="slide3">
                 <div class="card rounded-lg border-0 shadow-lg">
                     <div class="card-body p-4">
                         <h5 class="card-title mb-5"><i
@@ -169,6 +179,21 @@
                         <a href="https://thingspeak.com/channels/768165">Learn more <span
                                 class="more-arrow">&rarr;</span></a>
                     </div>
+                    </div>
+                </div>
+                <div class="slide3">
+                        <div class="card rounded border-0 shadow-lg mb-5">
+                                <div class="card-body p-4">
+                                        <h5 class="card-title mb-5"><i
+                                            class="far fa-calendar-alt mr-2 mr-lg-3 text-primary fa-lg fa-fw"></i>실외 미세먼지</h5>
+                                        <!--chart 3 -->
+                                        <div class="chart3">
+                                            <p> 이부분을 차트로 수정</p>
+                                        </div>
+                                        <a href="https://thingspeak.com/channels/768165">Learn more <span
+                                                class="more-arrow">&rarr;</span></a>
+                                </div>
+                        </div>
                 </div>
                 <!--//card-->
             </div>
@@ -186,6 +211,11 @@
             <!--amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
             <!--penatibus et magnis dis.-->
         </div>
+        <p style="font-size: 1.3em; color: white;"> 
+        기기를 통해 측정한 최근 24시간 동안의 실내 미세먼지와 그 예측값을 나타낸 그래프입니다. <br>
+        측정한 데이터를 기반으로 LSTM모델, ARIMA모델을 이용하여 한 시간 뒤의 값을 예측하였습니다. <br>
+        LSTM모델과 ARIMA모델의 RMSE(평균 제곱근 오차)는 각각 8.3과 18.3입니다.
+    </p>
     </div>
 </section>
 <!--//cta-section-->
@@ -231,9 +261,35 @@
 <script src="/static/js/moment.js" type="text/javascript"></script>
 <script src="/static/js/Chart.min.js" type="text/javascript"></script>
 <script src="/static/js/utils.js" type="text/javascript"></script>
+<script>
 
-<!--TODO response 데이터로 변경 필요 - 주희-->
-<!--[documentation]https://www.chartjs.org/-->
+//가운데부분
+var slide1 = document.getElementsByClassName("slide");
+var slide2 = document.getElementsByClassName("slide2");
+var slide3 = document.getElementsByClassName("slide3");
+showSlides(slide1, 0);
+showSlides(slide2, 0);
+showSlides(slide3, 0);
+
+function showSlides(slides, i) {
+    if(i) // i가 1일 때
+    {
+        slides[1].style.display = "none";  
+        slides[0].style.display = "block";
+        i = 0; 
+    }
+    else 
+    {
+        slides[0].style.display = "none";  
+        slides[1].style.display = "block";  
+        i = 1;
+    }
+    setTimeout(showSlides, 5000, slides, i); // Change image every 5 seconds
+}
+
+</script>
+
+<!-- 맨 밑 부분 그래프-->
 <script>
 function newDate() {
   return moment().add(days, 'd');
@@ -286,14 +342,39 @@ var config = {
 
 var ctx = document.getElementById("myChart").getContext("2d");
 new Chart(ctx, config);
+
+//슬라이드에 차트들
+var slide2_array = dust_array.slice(-6); // 6시간것만 보여주기
+var slide_time = time_array.slice(-7, -1);
+var config = {
+  type: 'line',
+  data: {
+    labels : slide_time,
+    datasets: [{
+      data: slide2_array,
+      borderColor: 'rgba(237, 110, 113, 1)',
+      backgroundColor: 'rgba(237, 110, 113, 0.2)',
+    }]
+  },
+  options:{
+    scaleShowLabels : false,
+    maintainAspectRatio: false,
+    legend: {
+            display: false,
+        }
+  }
+};
+var ctx = document.getElementById("SlideChart2").getContext("2d");
+new Chart(ctx, config);
+
+
+//맨 위 환기방안추천
 var inAir={{ last_indoor }};
 var outAir={{ outdoorAir }};
 var predict = lstm_array[lstm_array.length-1];
 var temp={{ temperature }};
 var humidity={{ humidity }};
-
 var discomfortIndex=temp*9/5-0.55*(1-humidity/100)*(9/5*temp-26)+32;
-
 var result="";
 
 if (inAir <= 75) { //실내 미세먼지 좋음
