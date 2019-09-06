@@ -39,7 +39,10 @@ def home():
     temp=rows['field1']
     hum = rows['field2']
 
-    discomfortIndex = int(temp) * 9 / 5 - 0.55 * (1 - int(hum) / 100) * (9 / 5 * int(temp) - 26) + 32;
+    discomfortIndex = int(temp) * 9 / 5 - 0.55 * (1 - int(hum) / 100) * (9 / 5 * int(temp) - 26) + 32
+    print("pm10 : ", dust_array)
+    print("LSTM : ", lstm_array)
+    print("arima : ", sarima_array)
 
     return render_template(
         "index.html",
