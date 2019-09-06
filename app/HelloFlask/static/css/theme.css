@@ -7968,6 +7968,10 @@
     .flipster__button svg:hover {
     stroke:#fff }
 
+    #result_image{
+        width: 25vw;
+        height: 29vh;
+    }
     @media (max-width: 991.98px) {
     .hero-section .figure-holder {
     min-height:460px;
