@@ -32,7 +32,7 @@ def home():
     last_indoor = int(float(dust_array[-1]))  # 마지막으로 측정된 실내미세먼지 데이터
     formatted_end = datetime.now().strftime('%Y-%m-%d%%20%H:%M:%S')
     response = requests.get(
-        'https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&days=3&timezone=Asia%2FSeoul&end=' + formatted_end)
+        'https://api.thingspeak.com/channels/779651/feeds.json?api_key=J36E4067ZLKAL9B6&days=3&timezone=Asia%2FSeoul&end=' + formatted_end)
 
     rows = response.json()
     rows = rows['feeds'][-1]
@@ -63,7 +63,7 @@ def home():
 # @app.route('/api/data')
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 3일치 조회
-    response = requests.get('https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&timezone=Asia%2FSeoul&days=3')
+    response = requests.get('https://api.thingspeak.com/channels/779651/feeds.json?api_key=J36E4067ZLKAL9B6&result=8000&timezone=Asia%2FSeoul&days=3')
     rows = response.json()
 
     return datetime.now().year, rows, rows['feeds']
@@ -128,7 +128,7 @@ def prediction_refresh():
 @app.route('/api/outdoor')
 def get_outdoordata():
 
-    url = 'https://api.thingspeak.com/channels/768165/feeds.json?api_key=59OJ3TVB7L8GD8GY&result=8000&average=60&days=30'
+    url = 'https://api.thingspeak.com/channels/779651/feeds.json?api_key=J36E4067ZLKAL9B6&result=8000&average=60&days=30'
 
 
     response = requests.get(
