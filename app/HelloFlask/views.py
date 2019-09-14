@@ -63,7 +63,6 @@ def home():
 def get_data():
     # 60분(1시간)마다 평균을 낸 데이터 3일치 조회
     response = requests.get('https://api.thingspeak.com/channels/779651/feeds.json?api_key=J36E4067ZLKAL9B6&result=8000&timezone=Asia%2FSeoul&days=3')
-
     rows = response.json()
 
     return datetime.now().year, rows, rows['feeds']
