@@ -33,7 +33,6 @@ def home():
     formatted_end = datetime.now().strftime('%Y-%m-%d%%20%H:%M:%S')
     response = requests.get(
         'https://api.thingspeak.com/channels/779651/feeds.json?api_key=J36E4067ZLKAL9B6&days=3&timezone=Asia%2FSeoul&end=' + formatted_end)
-
     rows = response.json()
     rows = rows['feeds'][-1]
     temp=rows['field1']
@@ -129,7 +128,6 @@ def prediction_refresh():
 def get_outdoordata():
 
     url = 'https://api.thingspeak.com/channels/779651/feeds.json?api_key=J36E4067ZLKAL9B6&result=8000&average=60&days=30'
-
 
     response = requests.get(
         'http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName=동작구&dataTerm=month&pageNo=1&numOfRows=1&ServiceKey=06YrQ2lf4444lv2VTKkrSXMQ%2BQqcxe1lwovKMj5rneOSAP8XH6ddTWVVvDk4XgH%2B1AnMRO5V7oMgk4UF0ZMNcg%3D%3D&_returnType=json&ver=1.3')
